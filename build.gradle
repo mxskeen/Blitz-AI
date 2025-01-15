@@ -4,7 +4,7 @@ buildscript {
         kotlin_version = '1.9.0'
         ksp_version = '1.9.0-1.0.12'
 
-        coil_version = '2.4.0'
+        coil_version = '2.7.0'
 
         room_version = '2.6.0'
         gson_version = '2.10.1'
