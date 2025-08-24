@@ -1,0 +1,112 @@
+name: Build and Release APKs
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+      
+    - name: Cache Gradle packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+          
+    - name: Make gradlew executable
+      run: chmod +x ./gradlew
+      
+    - name: Accept Android SDK licenses
+      run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+      
+    - name: Build Release APK (Universal)
+      run: ./gradlew assembleRelease
+      
+    - name: Build Release APK (ARM64-v8a)
+      run: ./gradlew assembleRelease -Pandroid.injected.build.abi=arm64-v8a
+      
+    - name: Build Release APK (ARMv7)
+      run: ./gradlew assembleRelease -Pandroid.injected.build.abi=armeabi-v7a
+      
+    - name: Build Release APK (x86_64)
+      run: ./gradlew assembleRelease -Pandroid.injected.build.abi=x86_64
+      
+    - name: Build Release APK (x86)
+      run: ./gradlew assembleRelease -Pandroid.injected.build.abi=x86
+      
+    - name: Get tag name
+      id: tag
+      run: echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+      
+    - name: Rename APK files
+      run: |
+        mkdir -p release-apks
+        cp app/build/outputs/apk/release/app-release.apk release-apks/Blitz-AI-${{ steps.tag.outputs.TAG_NAME }}-universal.apk || true
+        cp app/build/outputs/apk/release/app-arm64-v8a-release.apk release-apks/Blitz-AI-${{ steps.tag.outputs.TAG_NAME }}-arm64-v8a.apk || true
+        cp app/build/outputs/apk/release/app-armeabi-v7a-release.apk release-apks/Blitz-AI-${{ steps.tag.outputs.TAG_NAME }}-armeabi-v7a.apk || true
+        cp app/build/outputs/apk/release/app-x86_64-release.apk release-apks/Blitz-AI-${{ steps.tag.outputs.TAG_NAME }}-x86_64.apk || true
+        cp app/build/outputs/apk/release/app-x86-release.apk release-apks/Blitz-AI-${{ steps.tag.outputs.TAG_NAME }}-x86.apk || true
+        
+    - name: Generate checksums
+      run: |
+        cd release-apks
+        sha256sum *.apk > checksums.txt
+        
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ steps.tag.outputs.TAG_NAME }}
+        name: Blitz AI ${{ steps.tag.outputs.TAG_NAME }}
+        body: |
+          ## Blitz AI ${{ steps.tag.outputs.TAG_NAME }}
+          
+          ### Download the appropriate APK for your device:
+          
+          - **Universal APK**: Compatible with all Android devices (larger file size)
+          - **ARM64-v8a**: Modern 64-bit ARM devices (most common)
+          - **ARMv7**: Older 32-bit ARM devices
+          - **x86_64**: 64-bit Intel/AMD devices (rare)
+          - **x86**: 32-bit Intel/AMD devices (very rare)
+          
+          ### Features in this release:
+          - Lightning-fast AI responses powered by Groq Cloud
+          - Modern Material 3 UI with card-based settings
+          - Custom system instructions that persist across conversations
+          - Rich markdown rendering with code block copy functionality
+          - Collapsible thinking blocks for AI reasoning
+          - Easy model selection from latest Groq offerings
+          
+          ### Installation:
+          1. Download the appropriate APK for your device architecture
+          2. Enable "Install from unknown sources" in your Android settings
+          3. Install the APK
+          4. Add your Groq API key in Settings
+          5. Start chatting!
+          
+          **Note**: If unsure which architecture to choose, download the Universal APK.
+        files: |
+          release-apks/*.apk
+          release-apks/checksums.txt
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
