@@ -284,9 +284,9 @@ private fun parseMarkdownBlocks(input: String): List<MarkdownBlock> {
     return blocks
 }
 
-private fun parseMarkdownBlocksNoThink(input: String): List<MarkdownBlock> {
+private fun parseMarkdownBlocksNoThink(text: String): List<MarkdownBlock> {
     val blocks = mutableListOf<MarkdownBlock>()
-    val lines = input.lines()
+    val lines = text.lines()
     val codeBuffer = StringBuilder()
     var inCode = false
 
