@@ -18,8 +18,8 @@ android {
         applicationId "com.krishna.blitzai"
         minSdk 23
         targetSdk 34
-        versionCode 1756023292
-        versionName "2.0.1"
+        versionCode 1756023344
+        versionName "2.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
