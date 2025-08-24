@@ -32,4 +32,5 @@
 
     <string name="error">Error</string>
     <string name="endpoint">Endpoint</string>
+    <string name="instructions">Instructions</string>
 </resources>

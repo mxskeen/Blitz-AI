@@ -51,9 +51,17 @@ class OpenAIRepository @Inject constructor(
     ).data.first().url
 
     suspend fun generateMessagesStream(messages: List<ChatMessage>) = flow {
+        val instructions = settingsDataStore.instructions.first()
+        val finalMessages = buildList {
+            instructions?.trim()?.takeIf { it.isNotEmpty() }?.let {
+                add(ChatMessage(content = it, role = "system"))
+            }
+            addAll(messages)
+        }
+
         val response = openAIService.generateMessagesStream(
             GenerateMessagesRequestBody(
-                messages,
+                finalMessages,
                 settingsDataStore.model.first(),
                 settingsDataStore.temperature.first()
             )

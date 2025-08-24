@@ -22,6 +22,7 @@ class SettingsDataStore @Inject constructor(
         val API_KEY_KEY = stringPreferencesKey("api_key")
         val MODEL_KEY = stringPreferencesKey("model")
         val TEMPERATURE_KEY = floatPreferencesKey("temperature")
+        val INSTRUCTIONS_KEY = stringPreferencesKey("instructions")
     }
 
     val endpoint = getAsFlow(ENDPOINT_KEY).map {
@@ -34,9 +35,11 @@ class SettingsDataStore @Inject constructor(
     val temperature = getAsFlow(TEMPERATURE_KEY).map {
         it ?: 1f
     }
+    val instructions = getAsFlow(INSTRUCTIONS_KEY)
 
     suspend fun saveEndpoint(endpoint: String?) = save(ENDPOINT_KEY, endpoint)
     suspend fun saveApiKey(apiKey: String?) = save(API_KEY_KEY, apiKey)
     suspend fun saveModel(model: String?) = save(MODEL_KEY, model)
     suspend fun saveTemperature(temperature: Float?) = save(TEMPERATURE_KEY, temperature)
+    suspend fun saveInstructions(instructions: String?) = save(INSTRUCTIONS_KEY, instructions)
 }

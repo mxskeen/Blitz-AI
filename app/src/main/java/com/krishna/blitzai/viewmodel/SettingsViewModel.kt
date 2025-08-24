@@ -22,6 +22,7 @@ class SettingsViewModel @Inject constructor(
     var apiKey by mutableStateOf("")
     var model by mutableStateOf("")
     var temperature by mutableStateOf("")
+    var instructions by mutableStateOf("")
 
     var changesMade by mutableStateOf(false)
 
@@ -31,6 +32,7 @@ class SettingsViewModel @Inject constructor(
             apiKey = settingsDataStore.apiKey.first() ?: ""
             model = settingsDataStore.model.first()
             temperature = settingsDataStore.temperature.first().toString()
+            instructions = settingsDataStore.instructions.first() ?: ""
         }
     }
 
@@ -44,6 +46,7 @@ class SettingsViewModel @Inject constructor(
                 .toFloatOrNull()
                 ?.coerceIn(0f, 2f) ?: 1f
         )
+        settingsDataStore.saveInstructions(instructions.ifBlank { null })
 
         onSaved()
     }

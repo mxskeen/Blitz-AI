@@ -5,7 +5,9 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -15,15 +17,32 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -35,6 +54,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.krishna.blitzai.R
 import com.krishna.blitzai.ui.widget.ErrorAlertDialog
+import com.krishna.blitzai.model.Models
 import com.krishna.blitzai.ui.widget.NavigationBackIcon
 import com.krishna.blitzai.viewmodel.SettingsViewModel
 
@@ -57,47 +77,82 @@ fun SettingsScreen(navController: NavController) {
                 .fillMaxSize()
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
         ) {
-            Column(
+            LazyColumn(
                 modifier = Modifier
-                    .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 10.dp)
+                    .padding(horizontal = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Spacer(modifier = Modifier.size(10.dp))
+                item { Spacer(modifier = Modifier.size(8.dp)) }
 
-                SettingsTextField(
-                    value = viewModel.endpoint,
-                    onValueChange = { viewModel.endpoint = it },
-                    labelResource = R.string.endpoint,
-                    viewModel = viewModel
-                )
+                item {
+                    Card(
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                            Text(text = "Connection", style = MaterialTheme.typography.titleMedium)
+                            SettingsTextField(
+                                value = viewModel.endpoint,
+                                onValueChange = { viewModel.endpoint = it },
+                                labelResource = R.string.endpoint,
+                                viewModel = viewModel
+                            )
+                            SettingsTextField(
+                                value = viewModel.apiKey,
+                                onValueChange = { viewModel.apiKey = it },
+                                labelResource = R.string.api_key,
+                                viewModel = viewModel
+                            )
+                        }
+                    }
+                }
 
-                Spacer(modifier = Modifier.size(10.dp))
+                item {
+                    Card(
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                            Text(text = "Model", style = MaterialTheme.typography.titleMedium)
+                            ModelDropdown(viewModel = viewModel)
+                            SettingsTextField(
+                                value = viewModel.temperature,
+                                onValueChange = { viewModel.temperature = it },
+                                labelResource = R.string.temperature,
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                                viewModel = viewModel
+                            )
+                        }
+                    }
+                }
 
-                SettingsTextField(
-                    value = viewModel.apiKey,
-                    onValueChange = { viewModel.apiKey = it },
-                    labelResource = R.string.api_key,
-                    viewModel = viewModel
-                )
+                item {
+                    Card(
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                            Text(text = "Instructions", style = MaterialTheme.typography.titleMedium)
+                            SettingsTextField(
+                                value = viewModel.instructions,
+                                onValueChange = { viewModel.instructions = it },
+                                labelResource = R.string.instructions,
+                                viewModel = viewModel,
+                                singleLine = false,
+                                minLines = 6,
+                                maxLines = 12
+                            )
+                        }
+                    }
+                }
 
-                Spacer(modifier = Modifier.size(10.dp))
-
-                SettingsTextField(
-                    value = viewModel.model,
-                    onValueChange = { viewModel.model = it },
-                    labelResource = R.string.model,
-                    viewModel = viewModel
-                )
-
-                Spacer(modifier = Modifier.size(10.dp))
-
-                SettingsTextField(
-                    value = viewModel.temperature,
-                    onValueChange = { viewModel.temperature = it },
-                    labelResource = R.string.temperature,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                    viewModel = viewModel
-                )
+                item { Spacer(modifier = Modifier.size(80.dp)) }
             }
 
             androidx.compose.animation.AnimatedVisibility(
@@ -134,7 +189,10 @@ private fun SettingsTextField(
     onValueChange: (String) -> Unit,
     @StringRes labelResource: Int,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    viewModel: SettingsViewModel
+    viewModel: SettingsViewModel,
+    singleLine: Boolean = true,
+    minLines: Int = 1,
+    maxLines: Int = Int.MAX_VALUE
 ) {
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
@@ -145,6 +203,55 @@ private fun SettingsTextField(
         },
         label = { Text(text = stringResource(id = labelResource)) },
         keyboardOptions = keyboardOptions,
-        shape = RoundedCornerShape(12.dp)
+        shape = RoundedCornerShape(12.dp),
+        singleLine = singleLine,
+        minLines = minLines,
+        maxLines = maxLines
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ModelDropdown(viewModel: SettingsViewModel) {
+    var expanded by rememberSaveable { mutableStateOf(false) }
+    val options = Models.chatModels
+    var textFieldWidthPx by rememberSaveable { mutableStateOf(0f) }
+    val density = LocalDensity.current
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded },
+    ) {
+        OutlinedTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .onGloballyPositioned { coords ->
+                    textFieldWidthPx = coords.size.width.toFloat()
+                }
+                .menuAnchor(),
+            value = viewModel.model,
+            onValueChange = {},
+            readOnly = true,
+            label = { Text(stringResource(id = R.string.model)) },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            shape = RoundedCornerShape(12.dp)
+        )
+
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier.width(with(density) { textFieldWidthPx.toInt().toDp() })
+        ) {
+            options.forEach { option ->
+                DropdownMenuItem(
+                    text = { Text(option) },
+                    onClick = {
+                        viewModel.model = option
+                        viewModel.changesMade = true
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
 }
