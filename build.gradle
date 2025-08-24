@@ -19,7 +19,7 @@ buildscript {
         androidx_activity_version = '1.8.2'
         androidx_datastore_version = '1.0.0'
 
-        material3_version = '1.1.2'
+        material3_version = '1.2.1'
         compose_version = '1.5.4'
 
         navigation_version = '2.7.5'

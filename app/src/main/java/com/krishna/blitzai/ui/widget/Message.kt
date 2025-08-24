@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.border
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.IconButton
@@ -203,7 +204,7 @@ private fun ActionChip(messageAction: MessageAction, onDismiss: () -> Unit) {
             labelColor = tint,
             leadingIconContentColor = tint
         ),
-        border = AssistChipDefaults.assistChipBorder(borderColor = tint)
+        border = BorderStroke(1.dp, tint)
     )
 }
 
