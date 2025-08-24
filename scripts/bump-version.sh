@@ -23,9 +23,18 @@ git add app/build.gradle
 git commit -m "Bump version to $VERSION"
 
 # Create and push tag
-git tag "v$VERSION"
-git push origin "v$VERSION"
-git push origin main
-
-echo "Created and pushed tag v$VERSION"
+if git tag "v$VERSION" 2>/dev/null; then
+    echo "Created new tag v$VERSION"
+    git push origin "v$VERSION"
+    git push origin main
+    echo "Pushed tag v$VERSION and main branch"
+else
+    echo "Tag v$VERSION already exists, deleting and recreating..."
+    git tag -d "v$VERSION" 2>/dev/null || true
+    git push origin --delete "v$VERSION" 2>/dev/null || true
+    git tag "v$VERSION"
+    git push origin "v$VERSION"
+    git push origin main
+    echo "Recreated and pushed tag v$VERSION"
+fi
 echo "GitHub Actions will now build and release the APKs automatically."

@@ -38,20 +38,8 @@ jobs:
     - name: Accept Android SDK licenses
       run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
       
-    - name: Build Release APK (Universal)
+    - name: Build Release APKs (All architectures)
       run: ./gradlew assembleRelease
-      
-    - name: Build Release APK (ARM64-v8a)
-      run: ./gradlew assembleRelease -Pandroid.injected.build.abi=arm64-v8a
-      
-    - name: Build Release APK (ARMv7)
-      run: ./gradlew assembleRelease -Pandroid.injected.build.abi=armeabi-v7a
-      
-    - name: Build Release APK (x86_64)
-      run: ./gradlew assembleRelease -Pandroid.injected.build.abi=x86_64
-      
-    - name: Build Release APK (x86)
-      run: ./gradlew assembleRelease -Pandroid.injected.build.abi=x86
       
     - name: Get tag name
       id: tag
@@ -60,11 +48,23 @@ jobs:
     - name: Rename APK files
       run: |
         mkdir -p release-apks
-        cp app/build/outputs/apk/release/app-release.apk release-apks/Blitz-AI-${{ steps.tag.outputs.TAG_NAME }}-universal.apk || true
-        cp app/build/outputs/apk/release/app-arm64-v8a-release.apk release-apks/Blitz-AI-${{ steps.tag.outputs.TAG_NAME }}-arm64-v8a.apk || true
-        cp app/build/outputs/apk/release/app-armeabi-v7a-release.apk release-apks/Blitz-AI-${{ steps.tag.outputs.TAG_NAME }}-armeabi-v7a.apk || true
-        cp app/build/outputs/apk/release/app-x86_64-release.apk release-apks/Blitz-AI-${{ steps.tag.outputs.TAG_NAME }}-x86_64.apk || true
-        cp app/build/outputs/apk/release/app-x86-release.apk release-apks/Blitz-AI-${{ steps.tag.outputs.TAG_NAME }}-x86.apk || true
+        find app/build/outputs/apk/release/ -name "*.apk" -exec cp {} release-apks/ \;
+        cd release-apks
+        for file in *.apk; do
+          if [[ $file == *"universal"* ]]; then
+            mv "$file" "Blitz-AI-${{ steps.tag.outputs.TAG_NAME }}-universal.apk"
+          elif [[ $file == *"arm64-v8a"* ]]; then
+            mv "$file" "Blitz-AI-${{ steps.tag.outputs.TAG_NAME }}-arm64-v8a.apk"
+          elif [[ $file == *"armeabi-v7a"* ]]; then
+            mv "$file" "Blitz-AI-${{ steps.tag.outputs.TAG_NAME }}-armeabi-v7a.apk"
+          elif [[ $file == *"x86_64"* ]]; then
+            mv "$file" "Blitz-AI-${{ steps.tag.outputs.TAG_NAME }}-x86_64.apk"
+          elif [[ $file == *"x86"* ]]; then
+            mv "$file" "Blitz-AI-${{ steps.tag.outputs.TAG_NAME }}-x86.apk"
+          else
+            mv "$file" "Blitz-AI-${{ steps.tag.outputs.TAG_NAME }}-${file}"
+          fi
+        done
         
     - name: Generate checksums
       run: |
