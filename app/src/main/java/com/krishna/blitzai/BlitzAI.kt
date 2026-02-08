@@ -12,7 +12,7 @@ import javax.inject.Inject
 class BlitzAI: Application() {
 
     companion object {
-        const val API_ENDPOINT = "api.groq.com/openai/v1"
+        const val API_ENDPOINT = "api.chutes.ai/v1"
 
         val applicationScope = MainScope()
     }

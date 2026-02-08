@@ -1,6 +1,6 @@
 # Blitz AI
 
-Blitz AI is a modern Android application built with Jetpack Compose that utilizes [Groq Cloud](https://console.groq.com/docs/quickstart) to deliver lightning-fast AI responses with advanced features like custom instructions, markdown rendering, and intelligent code block handling.
+Blitz AI is a modern Android application built with Jetpack Compose that utilizes [Chutes AI](https://chutes.ai) to deliver fast AI responses with advanced features like custom instructions, markdown rendering, intelligent code block handling, and long-term memory.
 
 
 ## Screenshots
@@ -13,16 +13,17 @@ Blitz AI is a modern Android application built with Jetpack Compose that utilize
 
 ## Features
 
-- **Ridiculously Fast**: Responses happen in real time—no more long waits for answers.
-- **Super Accurate**: Delivers better results than competitors, so you're not left second-guessing.
-- **Groq Cloud Power**: Backed by the speed and efficiency of Groq Cloud for optimized performance.
-- **Modern Material 3 UI**: Beautiful, responsive interface with card-based settings and smooth animations.
-- **Custom Instructions**: Set personalized system instructions that persist across conversations.
-- **Markdown Support**: Rich text rendering with code blocks, headings, bold, italic, and inline code.
-- **Code Block Copy**: One-click copy functionality with visual feedback for all code snippets.
-- **Think Blocks**: Collapsible reasoning sections that auto-hide when AI finishes thinking.
-- **Model Selection**: Easy dropdown to choose from the latest Groq models.
-- **Persistent Settings**: All preferences saved locally with DataStore.
+- Chutes AI integration for fast inference
+- Long-term memory: AI remembers context from previous conversations
+- Modern Material 3 UI with card-based settings and smooth animations
+- Custom instructions that persist across conversations
+- Markdown support with code blocks, headings, bold, italic, and inline code
+- Code block copy with visual feedback
+- Think blocks: collapsible reasoning sections
+- Model selection dropdown
+- Persistent settings with DataStore
+- Voice/audio generation support
+- Image generation support
 
 ## Tech Stack
 
@@ -39,10 +40,11 @@ Blitz AI is a modern Android application built with Jetpack Compose that utilize
 ## Setup
 
 1. Clone the repository
-2. Add your Groq API key in Settings
+2. Add your Chutes API key in Settings
 3. Select your preferred model from the dropdown
 4. Optionally customize system instructions
-5. Start chatting!
+5. Enable long-term memory in Settings for context-aware conversations
+6. Start chatting!
 
 ## Download
 

@@ -5,6 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
+import com.krishna.blitzai.repository.local.MemoryRepository
 import com.krishna.blitzai.store.datastore.SettingsDataStore
 import com.krishna.blitzai.viewmodel.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,6 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val settingsDataStore: SettingsDataStore,
+    private val memoryRepository: MemoryRepository,
     application: Application
 ): BaseViewModel(application) {
 
@@ -23,6 +25,7 @@ class SettingsViewModel @Inject constructor(
     var model by mutableStateOf("")
     var temperature by mutableStateOf("")
     var instructions by mutableStateOf("")
+    var memoryEnabled by mutableStateOf(false)
 
     var changesMade by mutableStateOf(false)
 
@@ -33,6 +36,7 @@ class SettingsViewModel @Inject constructor(
             model = settingsDataStore.model.first()
             temperature = settingsDataStore.temperature.first().toString()
             instructions = settingsDataStore.instructions.first() ?: ""
+            memoryEnabled = settingsDataStore.memoryEnabled.first()
         }
     }
 
@@ -47,7 +51,12 @@ class SettingsViewModel @Inject constructor(
                 ?.coerceIn(0f, 2f) ?: 1f
         )
         settingsDataStore.saveInstructions(instructions.ifBlank { null })
+        settingsDataStore.saveMemoryEnabled(memoryEnabled)
 
         onSaved()
+    }
+
+    fun clearAllMemories() = viewModelScope.launch {
+        memoryRepository.deleteAllMemories()
     }
 }

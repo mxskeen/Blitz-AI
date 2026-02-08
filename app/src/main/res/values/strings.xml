@@ -24,7 +24,7 @@
     <string name="api_key_is_required_to_access_api">Key is required to access the Chat API</string>
     <string name="how_to_get_it">How to get it</string>
     <string name="instruction_part_1_1">Log in to your account on</string>
-    <string name="instruction_part_1_2" translatable="false">Groq</string>
+    <string name="instruction_part_1_2" translatable="false">Chutes</string>
     <string name="instruction_part_2">Tap on the API keys Section</string>
     <string name="instruction_part_3">\"You will See a New Page\"</string>
     <string name="instruction_part_4">Tap \"Click Create API key\"</string>

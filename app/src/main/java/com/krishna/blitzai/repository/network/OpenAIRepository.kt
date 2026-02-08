@@ -1,6 +1,7 @@
 package com.krishna.blitzai.repository.network
 
 import com.krishna.blitzai.database.entity.ChatMessage
+import com.krishna.blitzai.database.entity.Memory
 import com.krishna.blitzai.model.network.request.GenerateAudioRequestBody
 import com.krishna.blitzai.model.network.request.GenerateImageRequestBody
 import com.krishna.blitzai.model.network.request.GenerateMessagesRequestBody
@@ -50,12 +51,22 @@ class OpenAIRepository @Inject constructor(
         GenerateImageRequestBody(prompt)
     ).data.first().url
 
-    suspend fun generateMessagesStream(messages: List<ChatMessage>) = flow {
+    suspend fun generateMessagesStream(messages: List<ChatMessage>, memories: List<Memory> = emptyList()) = flow {
         val instructions = settingsDataStore.instructions.first()
         val finalMessages = buildList {
             instructions?.trim()?.takeIf { it.isNotEmpty() }?.let {
                 add(ChatMessage(content = it, role = "system"))
             }
+            
+            // Add relevant memories as context if available
+            if (memories.isNotEmpty()) {
+                val memoryContent = memories.joinToString("\n") { "- ${it.content}" }
+                add(ChatMessage(
+                    content = "[Relevant context from previous conversations:]\n$memoryContent",
+                    role = "system"
+                ))
+            }
+            
             addAll(messages)
         }
 

@@ -1,29 +1,30 @@
 package com.krishna.blitzai.model
 
 object Models {
-    // Chat-capable models and other available options from Groq docs
-    // For now we include major chat/text models and whisper TTS for completeness
-    // You can filter further in UI if needed.
+    // Chat-capable models from Chutes AI
+    // See: https://chutes.ai for full list
     val chatModels: List<String> = listOf(
-        // Stable
-        "llama-3.1-8b-instant",
-        "llama-3.3-70b-versatile",
-        "meta-llama/llama-guard-4-12b",
-        "openai/gpt-oss-120b",
-        "openai/gpt-oss-20b",
-        // Preview
-        "deepseek-r1-distill-llama-70b",
-        "meta-llama/llama-4-maverick-17b-128e-instruct",
-        "meta-llama/llama-4-scout-17b-16e-instruct",
-        "meta-llama/llama-prompt-guard-2-22m",
-        "meta-llama/llama-prompt-guard-2-86m",
-        "moonshotai/kimi-k2-instruct",
-        "qwen/qwen3-32b"
+        // Popular Models
+        "chutesai/Mistral-Small-24B-Instruct-2501",
+        "chutesai/Llama-3.3-70B-Instruct",
+        "chutesai/Llama-3.1-8B-Instruct",
+        "chutesai/DeepSeek-R1-Distill-Qwen-32B",
+        "chutesai/Llama-3.2-3B-Instruct",
+        "chutesai/Qwen2.5-72B-Instruct",
+        "chutesai/Qwen2.5-Coder-32B-Instruct",
+        "chutesai/Nous-DeepHermes-3-Llama-3-8B-Preview",
+        "chutesai/Mistral-Nemo-Instruct-2407",
+        "chutesai/phi-4",
+        // Reasoning Models
+        "chutesai/DeepSeek-R1-Distill-Llama-70B",
+        "chutesai/QwQ-32B-Preview",
+        // Vision Models
+        "chutesai/Qwen2-VL-72B-Instruct",
+        "chutesai/Llama-3.2-11B-Vision-Instruct"
     )
 
-    // Speech models (not for chat completion but useful elsewhere)
+    // Speech models (when supported by Chutes)
     val speechModels: List<String> = listOf(
-        "whisper-large-v3",
-        "whisper-large-v3-turbo"
+        "openai/whisper-large-v3"
     )
 }

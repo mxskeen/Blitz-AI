@@ -176,7 +176,7 @@ private fun buildFirstInstruction() = buildAnnotatedString {
     append(stringResource(id = R.string.instruction_part_1_1))
     append(" ")
 
-    pushStringAnnotation("openai", annotation = "https://console.groq.com/keys")
+    pushStringAnnotation("openai", annotation = "https://chutes.ai")
     withStyle(SpanStyle(color = MaterialTheme.colorScheme.primary)) {
         append(stringResource(id = R.string.instruction_part_1_2))
     }
